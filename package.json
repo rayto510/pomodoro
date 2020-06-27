@@ -6,6 +6,10 @@
   "scripts": {
     "test": "jest --watchAll"
   },
+  "jest": {
+    "verbose": true,
+    "setupFilesAfterEnv": ["./jest.setup.js"]
+  },
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
