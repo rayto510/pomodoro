@@ -5,8 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",
-    "build": "webpack --mode production",
-    "test": "jest --watchAll"
+    "build": "webpack --mode production && go run server.go",
+    "test": "jest --collect-coverage",
+    "watch": "jest --watch-all"
   },
   "jest": {
     "verbose": true,
