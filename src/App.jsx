@@ -20,11 +20,20 @@ export default function App() {
 
   function countDown(timeInput) {
     let time2 = timeInput;
+    let label2 = label;
     setInterval(() => {
       if (time2 === '00:00') {
-        time2 = formatTime(breakCounter.count);
-        setTime(time2);
-        setLabel(breakCounter.label);
+        if (label2 === sessionCounter.label) {
+          time2 = formatTime(breakCounter.count);
+          setTime(time2);
+          setLabel(breakCounter.label);
+          label2 = breakCounter.label;
+        } else {
+          time2 = formatTime(sessionCounter.count);
+          setTime(time2);
+          setLabel(sessionCounter.label);
+          label2 = sessionCounter.label;
+        }
       } else {
         const numbers = time2.replace(/:/, '').split('').map((n) => parseInt(n, 10));
 
