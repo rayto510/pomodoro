@@ -15,10 +15,13 @@ export default function useCounter(initial, variant) {
     }
   };
 
+  const label = `${variant.charAt(0).toUpperCase() + variant.slice(1)}`;
+
   return {
     count,
     variant,
     decrement,
     increment,
+    label,
   };
 }

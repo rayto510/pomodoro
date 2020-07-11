@@ -1,6 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import App from './App';
+
+beforeEach(() => {
+  jest.useFakeTimers();
+});
 
 test('break length', () => {
   const { getByRole } = render(<App />);
@@ -122,4 +126,57 @@ test('timer label', () => {
 test('time left', () => {
   const { getByTestId } = render(<App />);
   expect(getByTestId('time-left')).toHaveTextContent('25:00');
+});
+
+test('start-stop button', () => {
+  const { getByTestId } = render(<App />);
+  expect(getByTestId('start-stop')).toBeInTheDocument();
+});
+
+test('countdown', () => {
+  const { getByTestId } = render(<App />);
+  expect(getByTestId('time-left')).toHaveTextContent('25:00');
+  expect(getByTestId('timer-label')).toHaveTextContent('Session');
+
+  fireEvent.click(getByTestId('start-stop'));
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:59');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:58');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:57');
+
+  act(() => jest.advanceTimersByTime(897000));
+  expect(getByTestId('time-left')).toHaveTextContent('10:00');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('09:59');
+
+  act(() => jest.advanceTimersByTime(539000));
+  expect(getByTestId('time-left')).toHaveTextContent('01:00');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('00:59');
+
+  act(() => jest.advanceTimersByTime(59000));
+  expect(getByTestId('time-left')).toHaveTextContent('00:00');
+  expect(getByTestId('timer-label')).toHaveTextContent('Session');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('05:00');
+  expect(getByTestId('timer-label')).toHaveTextContent('Break');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('04:59');
+
+  act(() => jest.advanceTimersByTime(299000));
+  expect(getByTestId('time-left')).toHaveTextContent('00:00');
+  expect(getByTestId('timer-label')).toHaveTextContent('Break');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('25:00');
+  expect(getByTestId('timer-label')).toHaveTextContent('Session');
 });
