@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
-export default function useCounter(initial, variant) {
+export default function useCounter(initial, variant, paused) {
   const [count, setCount] = useState(initial);
 
   const decrement = () => {
-    if (count > 1) {
+    if (count > 1 && paused) {
       setCount(count - 1);
     }
   };
 
   const increment = () => {
-    if (count < 60) {
+    if (count < 60 && paused) {
       setCount(count + 1);
     }
   };

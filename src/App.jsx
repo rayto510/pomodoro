@@ -4,12 +4,13 @@ import useCounter from './hooks/useCounter';
 import CounterDisplay from './components/CounterDisplay';
 
 export default function App() {
-  const breakCounter = useCounter(5, 'break');
-  const sessionCounter = useCounter(25, 'session');
+  const [paused, setPaused] = useState(true);
+
+  const breakCounter = useCounter(5, 'break', paused);
+  const sessionCounter = useCounter(25, 'session', paused);
 
   const [time, setTime] = useState(`${sessionCounter.count}:00`);
   const [label, setLabel] = useState(sessionCounter.label);
-  const [paused, setPaused] = useState(true);
 
   function formatTime(count) {
     return count < 10 ? `0${count}:00` : `${count}:00`;

@@ -204,3 +204,23 @@ test('pause', () => {
   act(() => jest.advanceTimersByTime(1000));
   expect(getByTestId('time-left')).toHaveTextContent('24:57');
 });
+
+test('session and break length display should not update when time is running', () => {
+  const { getByTestId } = render(<App />);
+  expect(getByTestId('break-length')).toHaveTextContent('5');
+  expect(getByTestId('session-length')).toHaveTextContent('5');
+
+  fireEvent.click(getByTestId('start-stop'));
+
+  fireEvent.click(getByTestId('break-decrement'));
+  expect(getByTestId('break-length')).toHaveTextContent('5');
+
+  fireEvent.click(getByTestId('break-increment'));
+  expect(getByTestId('break-length')).toHaveTextContent('5');
+
+  fireEvent.click(getByTestId('session-decrement'));
+  expect(getByTestId('session-length')).toHaveTextContent('5');
+
+  fireEvent.click(getByTestId('session-increment'));
+  expect(getByTestId('session-length')).toHaveTextContent('5');
+});
