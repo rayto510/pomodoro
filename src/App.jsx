@@ -9,6 +9,7 @@ export default function App() {
 
   const [time, setTime] = useState(`${sessionCounter.count}:00`);
   const [label, setLabel] = useState(sessionCounter.label);
+  const [paused, setPaused] = useState(true);
 
   function formatTime(count) {
     return count < 10 ? `0${count}:00` : `${count}:00`;
@@ -18,47 +19,46 @@ export default function App() {
     setTime(formatTime(sessionCounter.count));
   }, [sessionCounter.count]);
 
-  function countDown(timeInput) {
-    let time2 = timeInput;
-    let label2 = label;
-    setInterval(() => {
-      if (time2 === '00:00') {
-        if (label2 === sessionCounter.label) {
-          time2 = formatTime(breakCounter.count);
-          setTime(time2);
-          setLabel(breakCounter.label);
-          label2 = breakCounter.label;
-        } else {
-          time2 = formatTime(sessionCounter.count);
-          setTime(time2);
-          setLabel(sessionCounter.label);
-          label2 = sessionCounter.label;
-        }
-      } else {
-        const numbers = time2.replace(/:/, '').split('').map((n) => parseInt(n, 10));
-
-        if (numbers[3] === 0) {
-          if (numbers[2] === 0) {
-            if (numbers[1] === 0) {
-              numbers[0] -= 1;
-              numbers[1] = 9;
-            } else {
-              numbers[1] -= 1;
-            }
-            numbers[2] = 5;
+  useEffect(() => {
+    const t = setInterval(() => {
+      if (!paused) {
+        if (time === '00:00') {
+          if (label === sessionCounter.label) {
+            setTime(formatTime(breakCounter.count));
+            setLabel(breakCounter.label);
           } else {
-            numbers[2] -= 1;
+            setTime(formatTime(sessionCounter.count));
+            setLabel(sessionCounter.label);
           }
-          numbers[3] = 9;
         } else {
-          numbers[3] -= 1;
-        }
+          const numbers = time.replace(/:/, '').split('').map((n) => parseInt(n, 10));
 
-        time2 = `${numbers[0]}${numbers[1]}:${numbers[2]}${numbers[3]}`;
-        setTime(time2);
+          if (numbers[3] === 0) {
+            if (numbers[2] === 0) {
+              if (numbers[1] === 0) {
+                numbers[0] -= 1;
+                numbers[1] = 9;
+              } else {
+                numbers[1] -= 1;
+              }
+              numbers[2] = 5;
+            } else {
+              numbers[2] -= 1;
+            }
+            numbers[3] = 9;
+          } else {
+            numbers[3] -= 1;
+          }
+
+          setTime(`${numbers[0]}${numbers[1]}:${numbers[2]}${numbers[3]}`);
+        }
       }
     }, 1000);
-  }
+
+    return () => {
+      clearInterval(t);
+    };
+  }, [paused, time, label]);
 
   return (
     <div>
@@ -67,7 +67,7 @@ export default function App() {
 
       <h1 data-testid="timer-label">{label}</h1>
       <div data-testid="time-left">{time}</div>
-      <button type="button" data-testid="start-stop" onClick={() => countDown(time)}>Play</button>
+      <button type="button" data-testid="start-stop" onClick={() => setPaused(!paused)}>Play</button>
     </div>
   );
 }

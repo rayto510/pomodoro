@@ -180,3 +180,27 @@ test('countdown', () => {
   expect(getByTestId('time-left')).toHaveTextContent('25:00');
   expect(getByTestId('timer-label')).toHaveTextContent('Session');
 });
+
+test('pause', () => {
+  const { getByTestId } = render(<App />);
+  expect(getByTestId('time-left')).toHaveTextContent('25:00');
+  expect(getByTestId('timer-label')).toHaveTextContent('Session');
+
+  fireEvent.click(getByTestId('start-stop'));
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:59');
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:58');
+
+  fireEvent.click(getByTestId('start-stop'));
+
+  act(() => jest.advanceTimersByTime(60000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:58');
+
+  fireEvent.click(getByTestId('start-stop'));
+
+  act(() => jest.advanceTimersByTime(1000));
+  expect(getByTestId('time-left')).toHaveTextContent('24:57');
+});
